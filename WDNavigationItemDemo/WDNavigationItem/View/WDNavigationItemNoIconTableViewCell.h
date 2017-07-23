@@ -12,6 +12,10 @@
 
 @property (nonatomic,strong) UIView *lineView;
 
+- (void)setLineWidthPercent:(CGFloat)percent;
+
+- (void)setLabelColor:(UIColor *)labelColor;
+
 - (void)setModel:(WDNavigationItemModel *)model;
 
 - (void)setShowHeadLine:(BOOL)showHead showTailLine:(BOOL)showTail lineColor:(UIColor *)color;

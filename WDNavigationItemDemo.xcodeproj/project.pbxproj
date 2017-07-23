@@ -612,6 +612,7 @@
 				F701914D1EB320CA005D97F5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F701914E1EB320CA005D97F5 /* Build configuration list for PBXNativeTarget "WDNavigationItemDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -620,6 +621,7 @@
 				F70191501EB320CA005D97F5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F70191511EB320CA005D97F5 /* Build configuration list for PBXNativeTarget "WDNavigationItemDemoUITests" */ = {
 			isa = XCConfigurationList;
@@ -628,6 +630,7 @@
 				F70191531EB320CA005D97F5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -16,4 +16,8 @@
 
 - (void)setShowHeadLine:(BOOL)showHead showTailLine:(BOOL)showTail lineColor:(UIColor *)color;
 
+- (void)setLabelColor:(UIColor *)labelColor;
+
+- (void)setLineWidthPercent:(CGFloat)percent;
+
 @end

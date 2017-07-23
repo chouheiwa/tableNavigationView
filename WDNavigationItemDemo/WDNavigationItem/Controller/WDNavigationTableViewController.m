@@ -22,48 +22,12 @@
 
 @implementation WDNavigationTableViewController
 
-+ (void)ShowFromVC:(UIViewController *)vc withShowPoint:(CGPoint)showPoint arcPosition:(CGFloat)arcPosition backColor:(UIColor *)backColor kind:(ShowArrowKind)kind modelArray:(NSArray <__kindof WDNavigationItemModel *>*)modelArray lineColor:(UIColor *)lineColor rowHeight:(CGFloat)rowHeight touchBlock:(void(^)(NSInteger index))touchBlock {
-    WDNavigationTableViewController *nav = [[WDNavigationTableViewController alloc] initWithShowPoint:showPoint arcPosition:arcPosition backColor:backColor kind:kind lineColor:lineColor rowHeight:rowHeight modelArray:modelArray touchBlock:touchBlock];
-    
-    nav.view.alpha = 0;
-    
-    [vc addChildViewController:nav];
-    
-    [vc.view addSubview:nav.view];
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        nav.view.alpha = 1;
-    }];
-}
-
-- (instancetype)initWithShowPoint:(CGPoint)showPoint arcPosition:(CGFloat)arcPosition backColor:(UIColor *)backColor kind:(ShowArrowKind)kind lineColor:(UIColor *)lineColor rowHeight:(CGFloat)rowHeight modelArray:(NSArray <__kindof WDNavigationItemModel *>*)modelArray touchBlock:(void(^)(NSInteger index))touchBlock{
-    if (self = [super init]) {
-        _showPoint = showPoint;
-        
-        _arcPoint = arcPosition;
-        
-        _backColor = backColor;
-        
-        _rowHeight = rowHeight;
-        
-        _lineColor = lineColor;
-        
-        _kind = kind;
-        
-        _modelArray = modelArray;
-        
-        _touchIndex = touchBlock;
-    }
-    
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.view.frame = [UIScreen mainScreen].bounds;
     
-    self.view.backgroundColor = [[UIColor blackColor]colorWithAlphaComponent:0.3];
+    self.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3];
     
     CGFloat rowHeight = _rowHeight >= 30?_rowHeight:44;
     
@@ -86,8 +50,53 @@
     if (_arcPositionPercent > 0 && _arcPositionPercent < 1) {
         _arcPoint = maxLength * _arcPositionPercent;
     }
+    
+    CGRect frame = CGRectMake(_showPoint.x, _showPoint.y, width, height);
+    
+    if (_attachedView) {
+        CGRect viewRealFrame = [WDNavigationTableViewController relativeFrameForScreenWithView:_attachedView];
+        
+        switch (_kind) {
+            case ShowArrowKindUp: {
+                frame.origin.y = CGRectGetMaxY(viewRealFrame) + _attachMargin;
+                
+                frame.origin.x = CGRectGetMinX(viewRealFrame) + CGRectGetWidth(viewRealFrame) * _attachPercent - _arcPoint;
+            }
+                
+                break;
+            case ShowArrowKindDown: {
+                frame.origin.y = CGRectGetMinY(viewRealFrame) - _attachMargin;
+                
+                frame.origin.x = CGRectGetMinX(viewRealFrame) + CGRectGetWidth(viewRealFrame) * _attachPercent - _arcPoint;
+            }
+                break;
+            case ShowArrowKindLeft: {
+                frame.origin.x = CGRectGetMaxX(viewRealFrame) + _attachMargin;
+                
+                frame.origin.y = CGRectGetMinY(viewRealFrame) + CGRectGetHeight(viewRealFrame) * _attachPercent - _arcPoint;
+            }
+                
+                break;
+                
+            case ShowArrowKindRight: {
+                frame.origin.x = CGRectGetMinX(viewRealFrame) - _attachMargin;
+                
+                frame.origin.y = CGRectGetMinY(viewRealFrame) + CGRectGetHeight(viewRealFrame) * _attachPercent - _arcPoint;
+            }
+                
+                break;
+            default: {
+                frame.origin = _showPoint;
+            }
+                break;
+        }
+        
+        frame.size.height = height;
+        
+        frame.size.width = width;
+    }
 
-    _nav = [[WDNavigationView alloc] initWithFrame:CGRectMake(_showPoint.x, _showPoint.y, width, height) showArrowKind:_kind withBackGroundColor:_backColor showShadow:YES arrowPosition:_arcPoint];
+    _nav = [[WDNavigationView alloc] initWithFrame:frame showArrowKind:_kind withBackGroundColor:_backColor showShadow:YES arrowPosition:_arcPoint];
     
     [self.view addSubview:_nav];
     
@@ -139,14 +148,7 @@
     [self layoutView:_nav.frame];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-}
-
 - (void)close {
-    
-    
     [self.view removeFromSuperview];
     
     [self removeFromParentViewController];
@@ -166,8 +168,14 @@
         WDNavigationItemTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"WDNavigationItemTableViewCell" forIndexPath:indexPath];
         
         [cell setModel:_modelArray[indexPath.row]];
+        
+        [cell setLineWidthPercent:_lineWidthPercent];
     
         [cell setShowHeadLine:(indexPath.row != 0 && _lineColor) showTailLine:(indexPath.row != _modelArray.count - 1) lineColor:_lineColor];
+        
+        if (_textColor) {
+            [cell setLabelColor:_textColor];
+        }
         
         cell.backgroundColor = [UIColor clearColor];
         
@@ -176,16 +184,19 @@
         WDNavigationItemNoIconTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"WDNavigationItemNoIconTableViewCell" forIndexPath:indexPath];
         [cell setModel:_modelArray[indexPath.row]];
         
+        [cell setLineWidthPercent:_lineWidthPercent];
+        
         [cell setShowHeadLine:(indexPath.row != 0 && _lineColor) showTailLine:(indexPath.row != _modelArray.count - 1) lineColor:_lineColor];
+        
+        if (_textColor) {
+            [cell setLabelColor:_textColor];
+        }
         
         cell.backgroundColor = [UIColor clearColor];
         
         return cell;
     }
 }
-
-
-
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (_touchIndex) {
@@ -206,11 +217,15 @@
 - (CGFloat)getMaxLength {
     CGFloat length = 0;
     
+    if (self.viewLength > 0) {
+        return self.viewLength;
+    }
+    
     for (WDNavigationItemModel *model in _modelArray) {
         CGFloat latestLength = 0;
         
         if ([UIImage imageNamed:model.iconImage]) {
-            latestLength = [model.title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size.width + 3 * 16 + 8;
+            latestLength = [model.title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size.width + 16 + 8 + 20 + 20;
         }else {
             latestLength = [model.title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size.width + 2 * 16;
         }
@@ -257,5 +272,32 @@
 
 - (void)dealloc {
     [_nav removeObserver:self forKeyPath:@"center"];
+}
+
++ (CGRect)relativeFrameForScreenWithView:(UIView *)v
+{
+    BOOL iOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7;
+    
+    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+    if (!iOS7) {
+        screenHeight -= 20;
+    }
+    UIView *view = v;
+    CGFloat x = .0;
+    CGFloat y = .0;
+    while (view.frame.size.width != 320 || view.frame.size.height != screenHeight) {
+        x += view.frame.origin.x;
+        y += view.frame.origin.y;
+        
+        if (!view.superview) break;
+        view = view.superview;
+        
+        
+        if ([view isKindOfClass:[UIScrollView class]]) {
+            x -= ((UIScrollView *) view).contentOffset.x;
+            y -= ((UIScrollView *) view).contentOffset.y;
+        }
+    }
+    return CGRectMake(x, y, v.frame.size.width, v.frame.size.height);
 }
 @end

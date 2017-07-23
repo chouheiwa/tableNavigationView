@@ -22,7 +22,7 @@
  是否显示三角形
 
  @param frame <#frame description#>
- @param show  <#show description#>
+
 
  @return <#return value description#>
  */

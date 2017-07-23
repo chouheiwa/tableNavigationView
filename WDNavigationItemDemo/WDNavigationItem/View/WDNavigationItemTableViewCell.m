@@ -16,6 +16,8 @@
 
 @property (nonatomic,strong) UIView *tailLineView;
 
+@property (nonatomic,assign) CGFloat lineWidthPercent;
+
 @end
 
 @implementation WDNavigationItemTableViewCell
@@ -30,6 +32,12 @@
     _tailLineView = [[UIView alloc] initWithFrame:CGRectZero];
     
     [self addSubview:_tailLineView];
+    
+//    [self setSelectionStyle:(UITableViewCellSelectionStyleNone)];
+}
+
+- (void)setLabelColor:(UIColor *)labelColor {
+    _showLabel.textColor = labelColor;
 }
 
 - (void)setModel:(WDNavigationItemModel *)model {
@@ -51,9 +59,19 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    _headLineView.frame = CGRectMake(0, 0, self.frame.size.width, 0.5);
+    CGFloat width = CGRectGetWidth(self.frame);
     
-    _tailLineView.frame = CGRectMake(0, self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+    if (_lineWidthPercent != 0) {
+        width = width * _lineWidthPercent;
+    }
+    
+    _headLineView.frame = CGRectMake((1 - _lineWidthPercent) * CGRectGetWidth(self.frame) / 2, 0, width, 0.25);
+    
+    _tailLineView.frame = CGRectMake((1 - _lineWidthPercent) * CGRectGetWidth(self.frame) / 2, self.frame.size.height - 0.25, width, 0.25);
+}
+
+- (void)setLineWidthPercent:(CGFloat)percent {
+    _lineWidthPercent = percent;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -114,9 +114,9 @@
         
         CGFloat y = _yPositionSlider.value * (frame.size.height - _changeView.frame.size.height) + _changeView.frame.size.height / 2;
         
-        _xPositionLabel.text = [NSString stringWithFormat:@"X:%.2f",x];
+        _xPositionLabel.text = [NSString stringWithFormat:@"X:%.2f",x - _changeView.frame.size.width / 2];
         
-        _yPositionLabel.text = [NSString stringWithFormat:@"Y:%.2f",y];
+        _yPositionLabel.text = [NSString stringWithFormat:@"Y:%.2f",y - _changeView.frame.size.height / 2];
         
         _changeView.center = CGPointMake(x, y);
     }

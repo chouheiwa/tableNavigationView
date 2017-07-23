@@ -10,9 +10,15 @@
 
 @interface WDNavigationItemModel : NSObject
 
-@property (nonatomic,strong,readonly) NSString *title;
+/**
+ 显示文字
+ */
+@property (nonatomic,copy,readonly) NSString *title;
 
-@property (nonatomic,strong,readonly) NSString *iconImage;
+/**
+ 显示的图片
+ */
+@property (nonatomic,copy,readonly) NSString *iconImage;
 
 + (instancetype)modelWithTitle:(NSString *)title iconImage:(NSString *)iconImage;
 

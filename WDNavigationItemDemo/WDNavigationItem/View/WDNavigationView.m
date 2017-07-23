@@ -95,8 +95,6 @@
 - (void)drawRect:(CGRect)rect {
     [_backColor setFill];
     
-    
-    
     UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:_tableView.frame byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(5, 5)];
     
     
@@ -104,9 +102,9 @@
     
     switch (_kind) {
         case ShowArrowKindUp: {
-            CGPoint point1 = CGPointMake(_arrowPosition - 6, 16);
+            CGPoint point1 = CGPointMake(_arrowPosition - 6, 8);
             CGPoint point2 = CGPointMake(_arrowPosition, 0);
-            CGPoint point3 = CGPointMake(_arrowPosition + 6, 16);
+            CGPoint point3 = CGPointMake(_arrowPosition + 6, 8);
             
             path = [UIBezierPath bezierPath];
             
@@ -122,9 +120,9 @@
         }
             break;
         case ShowArrowKindDown:{
-            CGPoint point1 = CGPointMake(_arrowPosition - 6, CGRectGetMaxY(_tableView.frame) - 8);
+            CGPoint point1 = CGPointMake(_arrowPosition - 6, CGRectGetMaxY(_tableView.frame));
             CGPoint point2 = CGPointMake(_arrowPosition, rect.size.height);
-            CGPoint point3 = CGPointMake(_arrowPosition + 6, CGRectGetMaxY(_tableView.frame) - 8);
+            CGPoint point3 = CGPointMake(_arrowPosition + 6, CGRectGetMaxY(_tableView.frame));
             
             path = [UIBezierPath bezierPath];
             
@@ -140,9 +138,9 @@
         }
             break;
         case ShowArrowKindLeft:{
-            CGPoint point1 = CGPointMake(16, _arrowPosition + 6);
+            CGPoint point1 = CGPointMake(8, _arrowPosition + 6);
             CGPoint point2 = CGPointMake(0, _arrowPosition);
-            CGPoint point3 = CGPointMake(16, _arrowPosition - 6);
+            CGPoint point3 = CGPointMake(8, _arrowPosition - 6);
             
             path = [UIBezierPath bezierPath];
             
@@ -159,9 +157,9 @@
             
             break;
         case ShowArrowKindRight:{
-            CGPoint point1 = CGPointMake(CGRectGetMaxX(_tableView.frame) - 8, _arrowPosition + 6);
+            CGPoint point1 = CGPointMake(CGRectGetMaxX(_tableView.frame), _arrowPosition + 6);
             CGPoint point2 = CGPointMake(rect.size.width, _arrowPosition);
-            CGPoint point3 = CGPointMake(CGRectGetMaxX(_tableView.frame) - 8, _arrowPosition - 6);
+            CGPoint point3 = CGPointMake(CGRectGetMaxX(_tableView.frame), _arrowPosition - 6);
             
             path = [UIBezierPath bezierPath];
             
@@ -180,8 +178,7 @@
         default:
             break;
     }
-    
-    
+
 }
 
 @end
